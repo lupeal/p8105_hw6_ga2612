@@ -23,11 +23,18 @@ homicide_data <- read_csv('data_hw6/homicide_data.csv') %>%
     resolution = case_when(
       disposition == 'Closed without arrest' ~ 'unsolved',
       disposition == 'Open/No arrest' ~ 'unsolved',
-      disposition == 'Closed by arrest' ~ 'solved')) %>%
+      disposition == 'Closed by arrest' ~ 'solved'),
+    #making victime_age numeric
+    victim_age = as.numeric(victim_age)) %>%
   #excluding cities
   filter(city_state != 'Dallas, TX',
          city_state != 'Phoenix, AZ',
          city_state != 'Kansas City, MO',
-         city_state != 'Tulsa, AL')
+         city_state != 'Tulsa, AL',
+        #filtering victim_race
+        victim_race == 'White' | victim_race == 'Black')
 ```
+
+
+
 
