@@ -1,0 +1,20 @@
+---
+title: "p8105_hw6_ga2612"
+author: "Lupe Antonio"
+date: "12/1/2023"
+output:
+  github_document:
+    toc: TRUE
+---
+
+```{r setup, include=FALSE, message = FALSE}
+library(tidyverse)
+```
+
+## Problem 1
+
+```{r}
+#loading data
+homicide_data <- read_csv('data_hw6/homicide_data.csv') %>%
+```
+
