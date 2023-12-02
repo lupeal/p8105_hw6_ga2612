@@ -158,6 +158,11 @@ birthweight[!complete.cases(birthweight), ]
 ```
 
 ```{r}
+#regression model
+model_p3 <- lm(bwt ~ babysex + blength + fincome + smoken,
+               data = birthweight)
 
+
+#plot for model
 ```
 
