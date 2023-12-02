@@ -125,8 +125,23 @@ Use 5000 bootstrap samples and, for each bootstrap sample, produce estimates of 
 ```{r}
 #fitting SLR model
 model_p2 <- lm(tmax ~ tmin + prcp, data = weather_df)
+```
 
-
+```{r}
+#bootstrapping
+bootstrap_results <- weather_df %>%
+  modelr::bootstrap(n = 1000) %>%
+  mutate(
+    models = map(strap, \(df) lm(tmax ~ tmin + prcp, data = df)),
+    estimates = map(models, tidy),
+    results = map(models, glance)) %>%
+  select(-strap, -models) %>%
+  unnest(estimates, results) %>%
+  select(term, estimate, r.squared) %>%
+  filter(term == 'tmin' | term == 'prcp') %>%
+  pivot_wider(names_from = 'term',
+              values_from = 'estimate') %>%
+  mutate(log_estimates = log(tmin * prcp))
 ```
 
 
@@ -212,3 +227,4 @@ cv_birthweight %>%
   geom_violin()
 ```
 
+Has a big error- my model. 
