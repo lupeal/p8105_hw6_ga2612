@@ -169,10 +169,11 @@ bootstrap_results %>%
 #confidence interval
 bootstrap_results %>%
   summarize(
-    ci_lower_r = quantile(r.squared, 0.025),
-    ci_upper_r = quantile(r.squared, 0.975),
+    ci_lower_r = quantile(r.squared, 0.025, na.rm = T),
+    ci_upper_r = quantile(r.squared, 0.975, na.rm = T),
     
-  )
+    ci_lower_logestimates = quantile(log_estimates, 0.025, na.rm = T),
+    ci_upper_logestimates = quantile(log_estimates, 0.975, na.rm = T))
 ```
 
 
