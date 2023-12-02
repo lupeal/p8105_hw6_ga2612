@@ -105,3 +105,11 @@ model_p2 <- lm(tmax ~ tmin + prcp, data = weather_df)
 
 ```
 
+
+
+## Problem 3
+
+```{r}
+birthweight <- read_csv('data_hw6/birthweight.csv')
+```
+
