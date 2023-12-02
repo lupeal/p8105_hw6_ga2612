@@ -12,6 +12,7 @@ library(tidyverse)
 library(broom)
 library(purrr)
 library(modelr)
+library(ggplot2)
 ```
 
 ## Problem 1
@@ -116,7 +117,13 @@ The boostrap is helpful when you’d like to perform inference for a parameter /
 
 r̂ 2
 log(β̂ 1∗β̂ 2)
-Use 5000 bootstrap samples and, for each bootstrap sample, produce estimates of these two quantities. Plot the distribution of your estimates, and describe these in words. Using the 5000 bootstrap estimates, identify the 2.5% and 97.5% quantiles to provide a 95% confidence interval for r̂ 2
+
+
+Use 5000 bootstrap samples and, for each bootstrap sample, produce estimates of these two quantities. Plot the distribution of your estimates, and describe these in words. 
+
+
+
+Using the 5000 bootstrap estimates, identify the 2.5% and 97.5% quantiles to provide a 95% confidence interval for r̂ 2
  and log(β̂ 0∗β̂ 1)
 . Note: broom::glance() is helpful for extracting r̂ 2
  from a fitted regression, and broom::tidy() (with some additional wrangling) should help in computing log(β̂ 1∗β̂ 2)
@@ -130,7 +137,7 @@ model_p2 <- lm(tmax ~ tmin + prcp, data = weather_df)
 ```{r}
 #bootstrapping
 bootstrap_results <- weather_df %>%
-  modelr::bootstrap(n = 1000) %>%
+  modelr::bootstrap(n = 5000) %>%
   mutate(
     models = map(strap, \(df) lm(tmax ~ tmin + prcp, data = df)),
     estimates = map(models, tidy),
@@ -144,6 +151,29 @@ bootstrap_results <- weather_df %>%
   mutate(log_estimates = log(tmin * prcp))
 ```
 
+```{r}
+#plotting log estimates
+bootstrap_results %>%
+  ggplot(aes(x = log_estimates)) +
+  geom_density()
+```
+
+```{r}
+#plotting for r-squared
+bootstrap_results %>%
+  ggplot(aes(x = r.squared)) +
+  geom_density()
+```
+
+```{r}
+#confidence interval
+bootstrap_results %>%
+  summarize(
+    ci_lower_r = quantile(r.squared, 0.025),
+    ci_upper_r = quantile(r.squared, 0.975),
+    
+  )
+```
 
 
 ## Problem 3
