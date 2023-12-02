@@ -99,6 +99,9 @@ Use 5000 bootstrap samples and, for each bootstrap sample, produce estimates of 
 
 
 ```{r}
-#
+#fitting SLR model
+model_p2 <- lm(tmax ~ tmin + prcp, data = weather_df)
+
+
 ```
 
