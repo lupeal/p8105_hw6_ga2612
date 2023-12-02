@@ -62,7 +62,7 @@ exp(confint(baltimore_logistic)['victim_sexMale', ])
 
 
 ```{r}
-homicide_data %>%
+cities_data <- homicide_data %>%
   nest(data = -city_state) %>%
   mutate(
     models = map(data, \(df) glm(resolution ~ victim_age + victim_sex + victim_race,
@@ -75,10 +75,22 @@ homicide_data %>%
          OR_low = exp(estimate - 1.96*std.error),
          OR_upper = exp(estimate + 1.96*std.error)) %>%
   select(city_state, term, adj_OR, OR_low, OR_upper)
+
+cities_data %>%
+  knitr::kable()
 ```
 
-Create a plot that shows the estimated ORs and CIs for each city. Organize cities according to estimated OR, and comment on the plot.
 
+```{r}
+cities_data %>%
+  mutate(city_state = fct_reorder(city_state, adj_OR)) %>%
+  ggplot(aes(x = city_state, y = adj_OR)) +
+  geom_point() +
+  geom_errorbar(aes(ymin = OR_low, ymax = OR_upper)) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+
+From the table above, we can see that the majority of cities have adjusted odds ratio less than 1. This suggest that among crimes against Males they have lower odds of resolution compared to crimes against Females, after controlling for the victims age and race. 
 
 
 
