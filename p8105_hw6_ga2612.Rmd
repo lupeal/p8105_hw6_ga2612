@@ -142,12 +142,8 @@ birthweight <- read_csv('data_hw6/birthweight.csv') %>%
     mrace = as.factor(mrace))
 ```
 
-Propose a regression model for birthweight. This model may be based on a hypothesized structure for the factors that underly birthweight, on a data-driven model-building process, or a combination of the two. Describe your modeling process and show a plot of model residuals against fitted values – use add_predictions and add_residuals in making this plot.
+Describe your modeling process 
 
-Compare your model to two others:
-
-One using length at birth and gestational age as predictors (main effects only)
-One using head circumference, length, sex, and all interactions (including the three-way interaction) between these
 Make this comparison in terms of the cross-validated prediction error; use crossv_mc and functions in purrr as appropriate.
 
 Note that although we expect your model to be reasonable, model building itself is not a main idea of the course and we don’t necessarily expect your model to be “optimal”.
@@ -173,4 +169,18 @@ birthweight %>%
   geom_hline(yintercept = 0, color = 'red')
 ```
 
+```{r}
+#model 2
+model2_p3 <- lm(bwt ~ blength + gaweeks,
+                data = birthweight)
+
+#model 3
+model3_p3 <- lm(bwt ~ bhead + blength + babysex + bhead*blength + bhead*babysex + blength*babysex +
+                  bhead*blength*babysex,
+                data = birthweight)
+```
+
+```{r}
+
+```
 
