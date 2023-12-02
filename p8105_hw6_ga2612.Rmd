@@ -11,6 +11,7 @@ output:
 library(tidyverse)
 library(broom)
 library(purrr)
+library(modelr)
 ```
 
 ## Problem 1
@@ -164,5 +165,12 @@ model_p3 <- lm(bwt ~ babysex + blength + fincome + smoken,
 
 
 #plot for model
+birthweight %>%
+  add_residuals(model_p3) %>%
+  add_predictions(model_p3) %>%
+  ggplot(aes(x = pred, y = resid)) +
+  geom_point() +
+  geom_hline(yintercept = 0, color = 'red')
 ```
+
 
