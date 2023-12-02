@@ -9,21 +9,21 @@ output:
 
 ```{r setup, include=FALSE, message = FALSE}
 library(tidyverse)
+library(broom)
 ```
 
 ## Problem 1
-
-Create a city_state variable (e.g. “Baltimore, MD”), and a binary variable indicating whether the homicide is solved. Omit cities Dallas, TX; Phoenix, AZ; and Kansas City, MO – these don’t report victim race. Also omit Tulsa, AL – this is a data entry mistake. For this problem, limit your analysis those for whom victim_race is white or black. Be sure that victim_age is numeric.
 
 ```{r, message = FALSE}
 #loading data
 homicide_data <- read_csv('data_hw6/homicide_data.csv') %>%
   mutate(
     city_state = str_c(city, state, sep = ', '),
+    #unsolved == 0, solved == 1
     resolution = case_when(
-      disposition == 'Closed without arrest' ~ 'unsolved',
-      disposition == 'Open/No arrest' ~ 'unsolved',
-      disposition == 'Closed by arrest' ~ 'solved'),
+      disposition == 'Closed without arrest' ~ 0,
+      disposition == 'Open/No arrest' ~ 0,
+      disposition == 'Closed by arrest' ~ 1),
     #making victime_age numeric
     victim_age = as.numeric(victim_age)) %>%
   #excluding cities
@@ -35,6 +35,41 @@ homicide_data <- read_csv('data_hw6/homicide_data.csv') %>%
         victim_race == 'White' | victim_race == 'Black')
 ```
 
+For the city of Baltimore, MD, use the glm function to fit a logistic regression with resolved vs unresolved as the outcome and victim age, sex and race as predictors. Save the output of glm as an R object; apply the broom::tidy to this object; and obtain the estimate and confidence interval of the adjusted odds ratio for solving homicides comparing male victims to female victims keeping all other variables fixed.
 
+```{r, message = FALSE}
+baltimore_data <- homicide_data %>%
+  filter(city_state == 'Baltimore, MD')
+
+#fitting glm model
+baltimore_logistic <- baltimore_data %>%
+  glm(resolution ~ victim_age + victim_sex + victim_race,
+    data = ., family = binomial())
+
+
+#obtaining estimate
+mf_results <- baltimore_logistic %>%
+  tidy() %>%
+  filter(term == 'victim_sexMale') %>%
+  mutate(adj_OR = exp(estimate)) %>%
+  select(term, log_adj_OR = estimate, adj_OR)
+
+#obtaining confidence interval for checking purposes
+mf_confint <- confint(baltimore_logistic)['victim_sexMale', ]
+
+
+
+
+
+```
+
+```{r}
+baltimore_logistic %>%
+  tidy() %>%
+  filter(term == 'victim_sexMale')
+
+
+confint(baltimore_logistic)['victim_sexMale', ]
+```
 
 
