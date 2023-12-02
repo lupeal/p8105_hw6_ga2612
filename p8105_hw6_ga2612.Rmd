@@ -207,6 +207,8 @@ cv_birthweight %>%
     names_to = 'model',
     values_to = 'rmse',
     names_prefix = 'rmse_') %>%
-  
+  mutate(model = fct_inorder(model)) %>%
+  ggplot(aes(x = model, y = rmse)) +
+  geom_violin()
 ```
 
