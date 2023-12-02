@@ -113,22 +113,6 @@ weather_df <-
   select(name, id, everything())
 ```
 
-The boostrap is helpful when you’d like to perform inference for a parameter / value / summary that doesn’t have an easy-to-write-down distribution in the usual repeated sampling framework. We’ll focus on a simple linear regression with tmax as the response with tmin and prcp as the predictors, and are interested in the distribution of two quantities estimated from these data:
-
-r̂ 2
-log(β̂ 1∗β̂ 2)
-
-
-Use 5000 bootstrap samples and, for each bootstrap sample, produce estimates of these two quantities. Plot the distribution of your estimates, and describe these in words. 
-
-
-
-Using the 5000 bootstrap estimates, identify the 2.5% and 97.5% quantiles to provide a 95% confidence interval for r̂ 2
- and log(β̂ 0∗β̂ 1)
-. Note: broom::glance() is helpful for extracting r̂ 2
- from a fitted regression, and broom::tidy() (with some additional wrangling) should help in computing log(β̂ 1∗β̂ 2)
-
-
 ```{r}
 #fitting SLR model
 model_p2 <- lm(tmax ~ tmin + prcp, data = weather_df)
@@ -157,6 +141,8 @@ bootstrap_results %>%
   ggplot(aes(x = log_estimates)) +
   geom_density()
 ```
+Based on the plot above, we can see that the majority of samples produced by bootstrapping are concentrated around similar values, somewhere between -6 and -3. This is further supported by the confidence intervals below. 
+
 
 ```{r}
 #plotting for r-squared
@@ -164,6 +150,8 @@ bootstrap_results %>%
   ggplot(aes(x = r.squared)) +
   geom_density()
 ```
+Based on the plot above, we can see that the r-squared values produced by bootstrapping have a small spread as well. The confidence interval is also small. This is consistent with values/estimates becoming fairly similar due bootstrapping becoming closer to normal distribution. 
+
 
 ```{r}
 #confidence interval
@@ -212,6 +200,8 @@ birthweight %>%
   geom_point() +
   geom_hline(yintercept = 0, color = 'red')
 ```
+To create my model, I took into consideration which factors/variables I believed would be most influential to a baby's birthweight. Based on working on similar datasets in the past, I believed that the sex, length are great influential factor. Other things to greatly consider as the mothers behaviors, which can be influenced by money and where the mother smokes or not.
+
 
 ```{r}
 #model 2
@@ -258,4 +248,4 @@ cv_birthweight %>%
   geom_violin()
 ```
 
-Has a big error- my model. 
+Based on the plot above, we can see that my model did not do too well compared to the other two models. It had a large RMSE value. 
